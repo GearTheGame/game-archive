@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Game</title>
+    <style>
+        body { margin: 0; background: #222; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        canvas { border: 2px solid #fff; }
+    </style>
+</head>
+<body>
+    <script>
+        // 1. Create and setup the HTML5 Canvas to handle rendering
+const canvas = document.createElement('canvas');
+canvas.width = 400;
+canvas.height = 400;
+document.body.appendChild(canvas);
+const ctx = canvas.getContext('2d');
+
+// 2. Track Keyboard States (Simulating Processing's keyIsPressed & keyCode)
+let keyIsPressed = false;
+let keyCode = "";
+
+window.addEventListener('keydown', (e) => {
+    keyIsPressed = true;
+    keyCode = e.key; // Standard JS returns arrow string values ("ArrowUp", etc.)
+});
+
+window.addEventListener('keyup', () => {
+    keyIsPressed = false;
+    keyCode = "";
+});
+
+// 3. Re-create Processing/Khan Academy functions using HTML5 canvas
+function background(r, g, b) {
+    ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function fill(r, g, b) {
+    ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+}
+
+function noStroke() {
+    ctx.strokeStyle = "transparent";
+}
+
+function rect(x, y, w, h) {
+    ctx.fillRect(x, y, w, h);
+}
+
+function ellipse(x, y, w, h) {
+    ctx.beginPath();
+    ctx.arc(x, y, w / 2, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+// 4. Your original game state variables
+let x = 200;
+let y = 200;
+let x2 = 249;
+let y2 = 385;
+let KEY = 0;
+let Screen2true = 0;
+
+// 5. Your screen logic (Slightly optimized to remove duplicated ellipses)
+function Screen1() {
+    background(255, 217, 0);
+    
+    noStroke();
+    fill(176, 176, 176);
+    rect(138, -32, 118, 533);
+    rect(304, -310, -219, 619);
+    rect(279, 55, 350, 95);
+    fill(255, 255, 255);
+
+    if (keyIsPressed && keyCode === "ArrowUp") { y -= 3; }
+    ellipse(x, y, 20, 20);
+
+    if (keyIsPressed && keyCode === "ArrowDown") { y += 3; }
+    ellipse(x, y, 20, 20);
+
+    if (keyIsPressed && keyCode === "ArrowLeft") { x -= 3; }
+    ellipse(x, y, 20, 20);
+
+    if (keyIsPressed && keyCode === "ArrowRight") { x += 3; }
+    ellipse(x, y, 20, 20);
+}
+
+function Screen2() {
+    background(255, 217, 0);
+    
+    noStroke();
+    fill(176, 176, 176);
+    rect(186, -32, 118, 533);
+    rect(162, -310, -219, 619);
+    rect(474, 55, 350, 95);
+    fill(255, 255, 255);
+
+    if (keyIsPressed && keyCode === "ArrowUp") { y2 -= 3; }
+    ellipse(x2, y2, 20, 20);
+
+    if (keyIsPressed && keyCode === "ArrowDown") { y2 += 3; }
+    ellipse(x2, y2, 20, 20);
+
+    if (keyIsPressed && keyCode === "ArrowLeft") { x2 -= 3; }
+    ellipse(x2, y2, 20, 20);
+
+    if (keyIsPressed && keyCode === "ArrowRight") { x2 += 3; }
+    ellipse(x2, y2, 20, 20);
+}
+
+function TheKeyCode() {
+    fill(0, 0, 0);
+    ellipse(248, 145, 10, 10);
+}
+
+// 6. Your Game Loop
+function draw() {
+    if (y < 8) { 
+        Screen2(); 
+        Screen2true += 1;
+    } else {  
+        Screen1(); 
+    }
+
+    if (y2 > 400) { 
+        Screen1(); 
+    } else { 
+        Screen2(); 
+    }
+
+    if (Screen2true === 1) { 
+        TheKeyCode(); 
+    }
+}
+
+// 7. Fire the native engine loop (replaces Processing's background loop)
+function loop() {
+    draw();
+    requestAnimationFrame(loop);
+}
+loop();
+
+    </script>
+</body>
+</html>
